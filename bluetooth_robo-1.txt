@@ -1,0 +1,68 @@
+#define F_CPU 12000000UL 					// define clock speed of the MCU
+#include <avr/io.h> 						// include avr header file
+#include <util/delay.h> 					// include delay header file
+ 
+void USARTInit(unsigned int ubrr_value) 	// USART initialization 
+{
+
+UBRRL = ubrr_value;    
+UBRRH = 0;
+UCSRC|=(1<<URSEL)|(1<<UCSZ1)|(1<<UCSZ0);
+UCSRB=(1<<RXEN)|(1<<TXEN);     				// Enable Receiver & Transmitter
+}
+
+unsigned char USARTReadChar()  				// USART recieving function
+{
+ while(!(UCSRA & (1<<RXC)));      			// Wait till the receiving  is not completed.
+ return UDR;            					// Return the received data
+}
+
+void main() 								// main function
+a{
+DDRB=0b00011110;  							
+unsigned char data;
+USARTInit(77);   							// Baudrate
+
+
+while(1)  									// infinite loop
+  	 {   
+	 data=USARTReadChar();   				// waiting to receive new data
+
+
+     if((data=='W')||(data=='w'))
+	 {
+	  PORTB=0b00010010;							// Move Forward
+	 }
+     
+	 else if((data=='A')||(data=='a'))
+	 {
+	  PORTB=0b00000010;							// Turning Left
+	 }
+
+     else if((data=='D')||(data=='d'))
+	 {
+	  PORTB=0b00010000;							// Turning Right
+	 }
+
+	 else if((data=='X')||(data=='x'))
+	 {
+	  PORTB=0b00001100;							// Move Backward
+	 }
+
+	 else if((data=='S')||(data=='s'))
+	 {
+	  PORTB=0b00000000;							// Stop
+	 }
+
+	 else
+	 {
+	  PORTB=0b00000000;							
+	  							
+     }
+ 
+    
+	 }									   		
+	
+	
+} 									   	   		
+
